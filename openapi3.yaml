@@ -9,11 +9,24 @@ info:
 servers:
   - url: http://localhost:8080
 paths:
-  /convert:
+  /sources/{external_source_name}/convert:
     post:
       tags:
-        - convert
+        - sources
       summary: convert body record to geoJson
+      parameters:
+        - in: path
+          name: external_source_name
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example: { attributes1: { cat: meow }, geometry: { wkt: 'Polygon 366..' }, attributes2: { cow: moo } }
       responses:
         200:
           description: converted
@@ -22,17 +35,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/convert'
         400:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example: { 'message': 'source not found' }
+        404:
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+              example: { 'message': 'bad request' }
         5XX:
           description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+              example: { 'message': 'internal server error' }
 components:
   schemas:
     error:
