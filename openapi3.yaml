@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: service-name
-  description: basic template for map colonies service
+  title: external-to-geojson
+  description: 'convert external format to geoJson format'
   version: 1.0.0
   license:
     name: MIT
@@ -9,37 +9,52 @@ info:
 servers:
   - url: http://localhost:8080
 paths:
-  /resourceName:
-    get:
-      operationId: getResourceName
+  /sources/{external_source_name}/convert:
+    post:
       tags:
-        - resourceName
-      summary: gets the resource
+        - sources
+      summary: convert body record to geoJson
+      parameters:
+        - in: path
+          name: external_source_name
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example: { attributes1: { cat: meow }, geometry: { wkt: 'Polygon 366..' }, attributes2: { cow: moo } }
       responses:
         200:
-          description: OK
+          description: converted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/resource'
-    post:
-      operationId: createResource
-      tags:
-        - resourceName
-      summary: creates a new record of type resource
-      responses:
-        201:
-          description: created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/resource'
+                $ref: '#/components/schemas/convert'
         400:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example: { 'message': 'source not found' }
+        404:
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+              example: { 'message': 'bad request' }
+        5XX:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example: { 'message': 'internal server error' }
 components:
   schemas:
     error:
@@ -49,17 +64,326 @@ components:
       properties:
         message:
           type: string
-    resource:
-      required:
-        - id
-        - name
-        - description
+    convert:
       type: object
+      required:
+        - type
+        - properties
+        - geometry
       properties:
-        id:
-          type: number
-          format: int64
-        name:
+        type:
           type: string
-        description:
-          type: string
+          enum:
+            - Feature
+        properties:
+          type: object
+        geometry:
+          oneOf:
+            - title: GeoJSON Point
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - Point
+                coordinates:
+                  type: array
+                  minItems: 2
+                  items:
+                    type: number
+                bbox:
+                  type: array
+                  minItems: 4
+                  items:
+                    type: number
+            - title: GeoJSON LineString
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - LineString
+                coordinates:
+                  type: array
+                  minItems: 2
+                  items:
+                    type: array
+                    minItems: 2
+                    items:
+                      type: number
+                bbox:
+                  type: array
+                  minItems: 4
+                  items:
+                    type: number
+            - title: GeoJSON Polygon
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - Polygon
+                coordinates:
+                  type: array
+                  items:
+                    type: array
+                    minItems: 4
+                    items:
+                      type: array
+                      minItems: 2
+                      items:
+                        type: number
+                bbox:
+                  type: array
+                  minItems: 4
+                  items:
+                    type: number
+            - title: GeoJSON MultiPoint
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - MultiPoint
+                coordinates:
+                  type: array
+                  items:
+                    type: array
+                    minItems: 2
+                    items:
+                      type: number
+                bbox:
+                  type: array
+                  minItems: 4
+                  items:
+                    type: number
+            - title: GeoJSON MultiLineString
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - MultiLineString
+                coordinates:
+                  type: array
+                  items:
+                    type: array
+                    minItems: 2
+                    items:
+                      type: array
+                      minItems: 2
+                      items:
+                        type: number
+                bbox:
+                  type: array
+                  minItems: 4
+                  items:
+                    type: number
+            - title: GeoJSON MultiPolygon
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - MultiPolygon
+                coordinates:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: array
+                      minItems: 4
+                      items:
+                        type: array
+                        minItems: 2
+                        items:
+                          type: number
+                bbox:
+                  type: array
+                  minItems: 4
+                  items:
+                    type: number
+            - title: GeoJSON GeometryCollection
+              type: object
+              required:
+                - type
+                - geometries
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - GeometryCollection
+                geometries:
+                  type: array
+                  items:
+                    oneOf:
+                      - title: GeoJSON Point
+                        type: object
+                        required:
+                          - type
+                          - coordinates
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                              - Point
+                          coordinates:
+                            type: array
+                            minItems: 2
+                            items:
+                              type: number
+                          bbox:
+                            type: array
+                            minItems: 4
+                            items:
+                              type: number
+                      - title: GeoJSON LineString
+                        type: object
+                        required:
+                          - type
+                          - coordinates
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                              - LineString
+                          coordinates:
+                            type: array
+                            minItems: 2
+                            items:
+                              type: array
+                              minItems: 2
+                              items:
+                                type: number
+                          bbox:
+                            type: array
+                            minItems: 4
+                            items:
+                              type: number
+                      - title: GeoJSON Polygon
+                        type: object
+                        required:
+                          - type
+                          - coordinates
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                              - Polygon
+                          coordinates:
+                            type: array
+                            items:
+                              type: array
+                              minItems: 4
+                              items:
+                                type: array
+                                minItems: 2
+                                items:
+                                  type: number
+                          bbox:
+                            type: array
+                            minItems: 4
+                            items:
+                              type: number
+                      - title: GeoJSON MultiPoint
+                        type: object
+                        required:
+                          - type
+                          - coordinates
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                              - MultiPoint
+                          coordinates:
+                            type: array
+                            items:
+                              type: array
+                              minItems: 2
+                              items:
+                                type: number
+                          bbox:
+                            type: array
+                            minItems: 4
+                            items:
+                              type: number
+                      - title: GeoJSON MultiLineString
+                        type: object
+                        required:
+                          - type
+                          - coordinates
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                              - MultiLineString
+                          coordinates:
+                            type: array
+                            items:
+                              type: array
+                              minItems: 2
+                              items:
+                                type: array
+                                minItems: 2
+                                items:
+                                  type: number
+                          bbox:
+                            type: array
+                            minItems: 4
+                            items:
+                              type: number
+                      - title: GeoJSON MultiPolygon
+                        type: object
+                        required:
+                          - type
+                          - coordinates
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                              - MultiPolygon
+                          coordinates:
+                            type: array
+                            items:
+                              type: array
+                              items:
+                                type: array
+                                minItems: 4
+                                items:
+                                  type: array
+                                  minItems: 2
+                                  items:
+                                    type: number
+                          bbox:
+                            type: array
+                            minItems: 4
+                            items:
+                              type: number
+                bbox:
+                  type: array
+                  minItems: 4
+                  items:
+                    type: number
+        bbox:
+          type: array
+          minItems: 4
+          items:
+            type: number
