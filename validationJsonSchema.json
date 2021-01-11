@@ -1,0 +1,18 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" },
+      "geo": {
+        "type": "object",
+        "properties": {
+          "geoType": { "enum": ["wkt", "geojson"] },
+          "geoLocation": { "type": "string" }
+        },
+        "required": ["geoType", "geoLocation"]
+      }
+    },
+    "required": ["name", "geo"]
+  }
+}
