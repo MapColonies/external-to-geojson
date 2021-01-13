@@ -115,7 +115,7 @@ describe('SourcesManager', () => {
         };
 
         await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`)
+          new GeomertyParseError(`Invalid wkt geometry`)
         );
       });
 
@@ -133,7 +133,7 @@ describe('SourcesManager', () => {
         };
 
         await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`)
+          new GeomertyParseError(`Invalid wkt geometry`)
         );
       });
     });
@@ -217,7 +217,7 @@ describe('SourcesManager', () => {
         };
 
         await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`)
+          new GeomertyParseError(`Invalid GeoJson geometry`)
         );
       });
     });

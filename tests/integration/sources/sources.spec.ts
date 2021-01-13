@@ -135,7 +135,7 @@ describe('resourceName', function () {
       const res = response.body as HttpError;
 
       expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
-      expect(res.message).toBe(`Cannot convert geometry to GeoJson geometry`);
+      expect(res.message).toBe(`Invalid wkt geometry`);
     });
   });
   describe('Sad Path', function () {

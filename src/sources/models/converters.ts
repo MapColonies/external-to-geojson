@@ -8,25 +8,25 @@ interface IConverter {
 
 export type Converters = Record<GeoTypes, IConverter>;
 
-function isGeoJson(geometry: unknown): geometry is Geometry {
+function isGeoJsonGeometry(geometry: unknown): geometry is Geometry {
   const geoJsonTypes = ['Polygon', 'MultiPoint', 'LineString', 'MultiLineString', 'MultiPolygon', 'GeometryCollection'];
   return geoJsonTypes.includes((geometry as Geometry).type);
 }
 
 export async function wktConverter(geometry: unknown): Promise<Geometry> {
   if (!(typeof geometry === 'string')) {
-    throw new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`);
+    throw new GeomertyParseError(`Invalid wkt geometry`);
   }
   const converted = parse(geometry);
   if (converted === null) {
-    throw new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`);
+    throw new GeomertyParseError(`Invalid wkt geometry`);
   }
   return Promise.resolve(converted);
 }
 
 export async function geoJsonConverter(geometry: unknown): Promise<Geometry> {
-  if (!isGeoJson(geometry)) {
-    throw new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`);
+  if (!isGeoJsonGeometry(geometry)) {
+    throw new GeomertyParseError(`Invalid GeoJson geometry`);
   }
   return Promise.resolve(geometry);
 }
