@@ -107,6 +107,7 @@ dist
 # Jest
 jest_html_reporters.html
 reports
+schema.json
 
 # Server sources
 schema.json
