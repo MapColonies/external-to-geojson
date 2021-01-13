@@ -7,7 +7,7 @@
       "geo": {
         "type": "object",
         "properties": {
-          "geoType": { "enum": ["wkt", "geojson"] },
+          "geoType": { "enum": ["wkt", "GeoJson"] },
           "geoLocation": { "type": "string" }
         },
         "required": ["geoType", "geoLocation"]

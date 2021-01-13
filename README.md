@@ -1,3 +1,3 @@
 # external-to-geojson
 
-Service for convert external format for geoJson format
+Service for convert external format for GeoJson format

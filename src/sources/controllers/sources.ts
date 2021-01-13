@@ -2,10 +2,10 @@ import { RequestHandler } from 'express';
 import httpStatus from 'http-status-codes';
 import { Feature } from 'geojson';
 import { injectable, inject } from 'tsyringe';
+import { HttpError } from '@map-colonies/error-express-handler';
 import { Services } from '../../common/constants';
 import { ILogger } from '../../common/interfaces';
-import { SourcesManager, IBodyRecord } from '../models/sourcesManager';
-import { HttpError } from '../../common/middlewares/ErrorHandler';
+import { SourcesManager, IExternalData } from '../models/sourcesManager';
 import { GeomertyParseError, GeometryNotFoundError, SchemaNotFoundError } from '../models/errors';
 
 interface SchemaParams {
@@ -13,7 +13,7 @@ interface SchemaParams {
   external_source_name: string;
 }
 
-type SourcesHandler = RequestHandler<SchemaParams, Feature, IBodyRecord>;
+type SourcesHandler = RequestHandler<SchemaParams, Feature, IExternalData>;
 
 @injectable()
 export class SourcesController {
@@ -27,12 +27,12 @@ export class SourcesController {
       geoJson = await this.manager.convert(req.body, sourceName);
     } catch (e) {
       const error = e as HttpError;
-      if (e instanceof SchemaNotFoundError || e instanceof GeometryNotFoundError) {
-        error.status = httpStatus.NOT_FOUND;
-      } else if (e instanceof GeometryNotFoundError || e instanceof GeomertyParseError) {
-        error.status = httpStatus.BAD_REQUEST;
-      } else {
-        error.status = httpStatus.INTERNAL_SERVER_ERROR;
+      if (e instanceof SchemaNotFoundError) {
+        error.statusCode = httpStatus.NOT_FOUND;
+      } else if (e instanceof GeomertyParseError) {
+        error.statusCode = httpStatus.BAD_REQUEST;
+      } else if (e instanceof GeometryNotFoundError) {
+        error.statusCode = httpStatus.UNPROCESSABLE_ENTITY;
       }
       this.logger.log('error', error.message, e);
       return next(error);

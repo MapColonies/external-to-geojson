@@ -15,25 +15,25 @@ function isGeoJson(geometry: unknown): geometry is Geometry {
 
 export async function wktConverter(geometry: unknown): Promise<Geometry> {
   if (!(typeof geometry === 'string')) {
-    throw new GeomertyParseError(`Cannot convert geometry to geoJson geometry`);
+    throw new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`);
   }
   const converted = parse(geometry);
   if (converted === null) {
-    throw new GeomertyParseError(`Cannot convert geometry to geoJson geometry`);
+    throw new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`);
   }
   return Promise.resolve(converted);
 }
 
 export async function geoJsonConverter(geometry: unknown): Promise<Geometry> {
   if (!isGeoJson(geometry)) {
-    throw new GeomertyParseError(`Cannot convert geometry to geoJson geometry`);
+    throw new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`);
   }
   return Promise.resolve(geometry);
 }
 
 export enum GeoTypes {
   WKT = 'wkt',
-  GEO_JSON = 'geojson',
+  GEO_JSON = 'GeoJson',
 }
 
 export const converters: Converters = {

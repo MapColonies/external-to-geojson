@@ -18,6 +18,7 @@
     "build": "tsc --project tsconfig.build.json  && npm run assets:copy",
     "start": "npm run build && cd dist && node ./index.js",
     "assets:copy": "copyfiles -f ./config/* ./dist/config && copyfiles -f ./openapi3.yaml ./dist/ && copyfiles ./package.json dist && copyfiles -f ./validationJsonSchema.json ./dist/ && copyfiles -f ./schema.json ./dist/ ",
+    "postbuild": "npm run assets:copy",
     "clean": "rimraf dist"
   },
   "directories": {
@@ -36,6 +37,7 @@
     }
   },
   "dependencies": {
+    "@map-colonies/error-express-handler": "^1.0.2",
     "@map-colonies/mc-logger": "^1.2.1",
     "@map-colonies/mc-model-types": "^1.0.1",
     "@map-colonies/mc-probe": "^1.0.0",

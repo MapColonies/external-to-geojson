@@ -7,7 +7,7 @@ import { Schemas } from './schemas';
 import { GeometryNotFoundError, SchemaNotFoundError } from './errors';
 import { Converters } from './converters';
 
-export type IBodyRecord = Record<string, unknown>;
+export type IExternalData = Record<string, unknown>;
 
 @injectable()
 export class SourcesManager {
@@ -17,7 +17,7 @@ export class SourcesManager {
     @inject('converters') private readonly converters: Converters
   ) {}
 
-  public async convert(body: IBodyRecord, sourceName: string): Promise<Feature> {
+  public async convert(externalData: IExternalData, sourceName: string): Promise<Feature> {
     const feature = {
       type: 'Feature',
       properties: {},
@@ -29,13 +29,13 @@ export class SourcesManager {
       throw new SchemaNotFoundError(`No schema with external source name = ${sourceName}`);
     }
 
-    const geometry = _.get(body, schema.geo.geoLocation);
+    const geometry = _.get(externalData, schema.geo.geoLocation);
     if (geometry === undefined) {
       throw new GeometryNotFoundError(`Geometry should locate in: ${schema.geo.geoLocation}`);
     }
 
     feature.geometry = await this.converters[schema.geo.geoType](geometry);
-    feature.properties = body;
+    feature.properties = externalData;
 
     const returnFeature = _.omit(feature, `properties.${schema.geo.geoLocation}`) as Feature;
     return returnFeature;

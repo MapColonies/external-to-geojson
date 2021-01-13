@@ -2,8 +2,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { initAsync as validatorInit } from 'openapi-validator-middleware';
 import { container, inject, injectable } from 'tsyringe';
+import { getErrorHandlerMiddleware } from '@map-colonies/error-express-handler';
 import { RequestLogger } from './common/middlewares/RequestLogger';
-import { ErrorHandler } from './common/middlewares/ErrorHandler';
 import { Services } from './common/constants';
 import { IConfig, ILogger } from './common/interfaces';
 import { sourcesRouterFactory } from './sources/routes/sourcesRouter';
@@ -16,8 +16,7 @@ export class ServerBuilder {
   public constructor(
     @inject(Services.LOGGER) private readonly logger: ILogger,
     @inject(Services.CONFIG) private readonly config: IConfig,
-    private readonly requestLogger: RequestLogger,
-    private readonly errorHandler: ErrorHandler
+    private readonly requestLogger: RequestLogger
   ) {
     this.serverInstance = express();
   }
@@ -37,7 +36,7 @@ export class ServerBuilder {
 
     this.serverInstance.use('/sources', sourcesRouterFactory(container));
     this.serverInstance.use('/', swaggerRouterFactory(container));
-    this.serverInstance.use(this.errorHandler.getErrorHandlerMiddleware());
+    this.serverInstance.use(getErrorHandlerMiddleware((message) => this.logger.log('error', message)));
   }
 
   private registerMiddleware(): void {
