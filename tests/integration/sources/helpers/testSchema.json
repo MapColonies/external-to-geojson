@@ -1,0 +1,16 @@
+[
+  {
+    "name": "animels",
+    "geo": {
+      "geoType": "wkt",
+      "geoLocation": "geometry.wkt"
+    }
+  },
+  {
+    "name": "vehicles",
+    "geo": {
+      "geoType": "GeoJson",
+      "geoLocation": "geometry"
+    }
+  }
+]

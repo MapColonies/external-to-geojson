@@ -1,1 +1,5 @@
-{}
+{
+  "schema": {
+    "filePath": "./tests/integration/sources/helpers/testSchema.json"
+  }
+}

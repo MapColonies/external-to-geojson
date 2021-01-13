@@ -115,7 +115,7 @@ describe('SourcesManager', () => {
         };
 
         await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Cannot convert geometry to geoJson geometry`)
+          new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`)
         );
       });
 
@@ -133,19 +133,19 @@ describe('SourcesManager', () => {
         };
 
         await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Cannot convert geometry to geoJson geometry`)
+          new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`)
         );
       });
     });
 
-    describe('with geojson geotype', () => {
+    describe('with GeoJson geotype', () => {
       beforeEach(function () {
         schema = [{ name: 'animals', geo: { geoType: GeoTypes.GEO_JSON, geoLocation: 'geometry' } }];
         schemas = new Schemas(schema);
         sourcesManager = new SourcesManager({ log: jest.fn() }, schemas, converters);
       });
 
-      it('should return the external data converted to geoJson', async function () {
+      it('should return the external data converted to GeoJson', async function () {
         const sourceName = 'animals';
         const externalData = {
           geometry: {
@@ -194,7 +194,7 @@ describe('SourcesManager', () => {
         expect(converted).toMatchObject(res);
       });
 
-      it('should throw an error for wrong geometry value (geojson format)', async function () {
+      it('should throw an error for wrong geometry value (GeoJson format)', async function () {
         const sourceName = 'animals';
         const externalData = {
           geometry: {
@@ -217,7 +217,7 @@ describe('SourcesManager', () => {
         };
 
         await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Cannot convert geometry to geoJson geometry`)
+          new GeomertyParseError(`Cannot convert geometry to GeoJson geometry`)
         );
       });
     });
