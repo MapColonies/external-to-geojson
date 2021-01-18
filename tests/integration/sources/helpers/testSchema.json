@@ -1,6 +1,6 @@
 [
   {
-    "name": "animels",
+    "name": "animals",
     "geo": {
       "geoType": "wkt",
       "geoLocation": "geometry.wkt"

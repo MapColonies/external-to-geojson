@@ -17,7 +17,7 @@ describe('resourceName', function () {
 
   describe('Happy Path', function () {
     it('should return 200 status code and external data converted to GeoJson with wkt geometry', async function () {
-      const externalSource = 'animels';
+      const externalSource = 'animals';
       const externalData = {
         geometry: {
           wkt: 'POLYGON((0.5 0.5,5 0,5 5,0 5,0.5 0.5), (1.5 1,4 3,4 1,1.5 1))',
@@ -119,7 +119,7 @@ describe('resourceName', function () {
   });
   describe('Bad Path', function () {
     it('should return 400 and bad Geometry message', async function () {
-      const externalSource = 'animels';
+      const externalSource = 'animals';
       const externalData = {
         geometry: {
           wkt: 'PLYGON((0.5 0.5,5 0,5 5,0 5,0.5 0.5), (1.5 1,4 3,4 1,1.5 1))',
@@ -160,7 +160,7 @@ describe('resourceName', function () {
     });
 
     it('should return 422 and not found Geometry message', async function () {
-      const externalSource = 'animels';
+      const externalSource = 'animals';
       const externalData = {
         geometry: {
           geo: {
