@@ -114,9 +114,7 @@ describe('SourcesManager', () => {
           },
         };
 
-        await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Invalid wkt geometry`)
-        );
+        await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(new GeomertyParseError(`Invalid wkt geometry`));
       });
 
       it('should throw an error for wrong geometry value (number instead of string)', async function () {
@@ -132,9 +130,7 @@ describe('SourcesManager', () => {
           },
         };
 
-        await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Invalid wkt geometry`)
-        );
+        await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(new GeomertyParseError(`Invalid wkt geometry`));
       });
     });
 
@@ -216,9 +212,7 @@ describe('SourcesManager', () => {
           },
         };
 
-        await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(
-          new GeomertyParseError(`Invalid GeoJson geometry`)
-        );
+        await expect(sourcesManager.convert(externalData, sourceName)).rejects.toThrow(new GeomertyParseError(`Invalid GeoJson geometry`));
       });
     });
   });
