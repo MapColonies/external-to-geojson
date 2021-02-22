@@ -5,9 +5,8 @@ import { ServerBuilder } from '../../../../src/serverBuilder';
 
 let app: Application | null = null;
 
-export async function init(): Promise<void> {
-  const builder = container.resolve<ServerBuilder>(ServerBuilder);
-  app = await builder.build();
+export function init(): void {
+  app = container.resolve<ServerBuilder>(ServerBuilder).build();
 }
 
 export async function convertSource(externalSourceName: string, externalData: Record<string, unknown>): Promise<supertest.Response> {
